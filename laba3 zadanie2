@@ -1,0 +1,18 @@
+def func1():
+
+    import copy
+    n=int(input())
+    a=[]
+    for  i in range(n):
+        c=input()
+        a.append(c)
+    b =copy.deepcopy(a)
+    b=sorted(b)
+    print('Исходный список',a)
+    print('Список в отсортированном порядке',b)
+    if a == b:
+            return(print("список отсортирован по возрастанию"))
+    else:
+            return(print("Список не отсортирован по возрастанию"))
+
+func1()
