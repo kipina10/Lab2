@@ -1,0 +1,12 @@
+text=str(input())
+b=text.title()
+text=text.split()
+b=b.split()
+d=[]
+for i in range(len(text)):
+    if text[i]==b[i]:
+        o=b[i].upper()
+        d.append(o)
+    else:
+        d.append(text[i])
+print(' '.join(d))
