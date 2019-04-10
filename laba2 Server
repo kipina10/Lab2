@@ -1,0 +1,32 @@
+import socket
+
+sock = socket.socket()
+sock.bind(('', 9090))
+
+
+
+
+while True:
+    sock.listen(1)
+    conn, addr = sock.accept()
+    print('connected:'), addr
+    data = conn.recv(1024)
+    if not data:
+        break
+
+    string=data.decode('utf-8')
+    v = 0
+    c = 0
+    v_list = list('аАоОиИуУёЁеЕэЭыЫюЮяЯ')
+    c_list = list('бБвВгГдДжЖзЗйЙкКлЛмМнНпПрРсСтТфФхХцЦчЧшШщЩ')
+    for i in v_list:
+        v += string.count(i)
+    for j in c_list:
+        c += string.count(j)
+    res = 'Всего букв: ' + str(v + c) + '\nГласные ' + str(v) + '\nСогласные ' + str(c) + '\nПроцент гласных ' + str( v / (c + v) * 100) + '\nПроцент Согласных ' + str(c / (v + c) * 100)
+    print(res)
+
+    conn.send(res.encode('utf-8'))
+
+
+conn.close()
