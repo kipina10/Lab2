@@ -1,0 +1,13 @@
+def func1():
+
+    from re import findall
+    t=r"\d+"
+    a=input()
+    b=findall(t,a)
+    print(b)
+
+    for i, item in enumerate(b):
+        b[i] = int(item)
+    print(b)
+    print('Сумма',sum(b))
+func1()
