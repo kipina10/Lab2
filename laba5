@@ -1,0 +1,146 @@
+import sys
+import  pypyodbc
+def menu():
+    print('Выберите действие\n0-Выход\n1-Вывести данные базы\n2-Поиск строчки по элементу\n3-Добавить строчку\n4-Удалить строчку \n5-Создать новую таблицу\n6-Изменение значений в таблице')
+    d=input()
+    if d==0:
+        sys.exit()
+    if d== '1':
+        listfun()
+    if d=='2':
+        searchfun()
+    if d=='3':
+        addfun()
+    if d=='4':
+        deletefun()
+    if d=='5':
+        newtablefun()
+    if d=='6':
+        changefun()
+def exit():
+    m = input('Вы хотите продолжить? (y/n)')
+    if m == 'y':
+        menu()
+    else:
+        sys.exit()
+def listfun():#Вывод результатов по параметру
+    print("Выберите Таблицу:=")
+    print("Пример: Tgames")
+    servername=input()
+    connection= pypyodbc.connect('Driver={SQL Server};'
+                                 'Server=LAPTOP-T8FQ0JST\SQLEXPRESS;'
+                                 'Database=Tgames;')
+    cursor=connection.cursor()
+    mySQLQuerry=("""
+                    SELECT *
+                    FROM dbo."""+servername+"""
+                 """)
+    cursor.execute(mySQLQuerry)
+
+    results=cursor.fetchall()
+    for i in results:
+        print((i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7],i[8]))
+    connection.close()
+    exit()
+def searchfun():#Вывод результатов по параметру
+    print("Выберите таблицу")
+    servername=input()
+    print("Выберите критерий поиска")
+    spar1=input("Выберите столбец(Пример: Issuer )")
+    spar2=input("Выберите значение столбца(Пример:'Blizzard Entertainment')")
+    connection= pypyodbc.connect('Driver={SQL Server};'
+                                 'Server=LAPTOP-T8FQ0JST\SQLEXPRESS;'
+                                 'Database=Tgames;')
+    cursor=connection.cursor()
+    mySQLQuerry=("SELECT * FROM dbo."+servername+" WHERE "+str(spar1)+"="+str(spar2))
+    cursor.execute(mySQLQuerry)
+
+    results=cursor.fetchall()
+    for i in results:
+        print((i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7]))
+    connection.close()
+    exit()
+def addfun():
+    print("Выберите таблицу")
+    servername=input()
+    val_1=[]
+    print("Вводите данные таблица в формате Наименование игры,Жанр,Год выпуска(формата 2000-01-01),Режим игры,Издатель,Игровой движок,Управление,Возрастное ограничение,Порядковый номер")
+    print("Пример:\nWorld of Warcraft\nMMORPG\n2008-08-06\nМ\nBlizzard Entertainment\nN/A\nКМ\n12\n21")
+    for i in range(9):
+        updtabl = input(">>")
+        val_1.append(updtabl)
+
+
+    val_1 = str("'" + val_1[0] + "'" + "," + "'" + val_1[1] + "'" + "," + "'" + val_1[2] + "'" + "," + "'" + val_1[
+        3] + "'" + "," + "'" + val_1[4] + "'" + "," + "'" + val_1[5] + "'" + "," + "'" + val_1[6] + "'" + "," + "'" +
+                val_1[7] + "'"+","+"'"+val_1[8]+"'")
+
+    #'Test', 'test', '2000-01-01', 'test', 'test', 'test', 'test', 'test','test'
+    connection = pypyodbc.connect('Driver={SQL Server};'
+                                  'Server=LAPTOP-T8FQ0JST\SQLEXPRESS;'
+                                  'Database=Tgames;')
+    cursor = connection.cursor()
+    cursor.execute("insert into dbo."+servername+"(Name_Game, Genre, Date, Mode, Issuer, Game_engine, Control, Age_limit,Number) values("+val_1+")")
+
+    connection.commit()
+    connection.close()
+    print('Строчка добавленна!')
+    exit()
+def deletefun():
+    print("Выберите таблицу")
+    servername = input()
+    print("Выберите номер строки которую хотите удалить")
+    delstr=input()
+    connection = pypyodbc.connect('Driver={SQL Server};'
+                                  'Server=LAPTOP-T8FQ0JST\SQLEXPRESS;'
+                                 'Database=Tgames;')
+    cursor = connection.cursor()
+    cursor.execute("delete from dbo."+servername+" where Number="+ delstr)
+
+    connection.commit()
+    connection.close()
+    print('Строчка удалена!')
+    exit()
+def newtablefun():
+    print("Выберите название новой таблицы")
+    name_table=input()
+    connection = pypyodbc.connect('Driver={SQL Server};'
+                                  'Server=LAPTOP-T8FQ0JST\SQLEXPRESS;'
+                                 'Database=Tgames;')
+    cursor = connection.cursor()
+    cursor.execute('''create table '''+name_table+'''
+                            (Name_Game nvarchar(50) NOT NULL,
+                            Genre nvarchar(50) NOT NULL,
+                            Date nvarchar(50) NOT NULL,
+                            Mode nvarchar(50) NOT NULL,
+                            Issuer nvarchar(50) NOT NULL,
+                            Game_engine nvarchar(50) NOT NULL,
+                            Control nvarchar(50) NOT NULL,
+                            Age_limit nvarchar(50) NOT NULL,
+                            Number nchar(10) NOT NULL,
+                );''')
+    connection.commit()
+    connection.close()
+    print("Таблица успешно созданна!")
+    exit()
+def changefun():
+    print("Выберите таблицу")
+    servername = input()
+    print("Выберите номер строки")
+    idstr=input()
+    print("Выберите название столбца, который хотите изменить")
+    param=input()
+    print("Впишите новое значение")
+    text=input()
+    connection = pypyodbc.connect('Driver={SQL Server};'
+                                  'Server=LAPTOP-T8FQ0JST\SQLEXPRESS;'
+                                  'Database=Tgames;')
+    cursor = connection.cursor()
+    cursor.execute("update "+servername+"  set "+param+"="+text+" where Number="+idstr)
+
+    connection.commit()
+    connection.close()
+    print('Строчка Изменена!')
+    exit()
+
+menu()
